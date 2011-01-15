@@ -63,7 +63,7 @@ private
     locations = doc.search("td.location a").map { |a| a.inner_html }
     
     if [magnitudes.size, dates.size, times.size, latitudes.size,
-        longitudes.size, links.size, locations.size].uniq.size == 1
+        longitudes.size, links.size, locations.size].uniq.size == 1 && magnitudes.size > 0
         
       data = magnitudes.zip(dates).zip(times).zip(latitudes).zip(longitudes).zip(links).zip(locations).map { |t| t.flatten }
       for (magnitude, date, time, latitude, longitude, link, location) in data
