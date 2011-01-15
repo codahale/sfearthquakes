@@ -11,16 +11,16 @@ CREDENTIALS_FILE = File.join(File.dirname(__FILE__), ".credentials")
 
 class Earthquake < Struct.new(:url, :location, :magnitude, :latitude, :longitude, :timestamp)
   EXPRESSIONS = [
-    "Yawn.",          # > 0.0 Richter
-    "Hmm.",           # > 1.0 Richter
-    "Hey.",           # > 2.0 Richter
-    "Whoah.",         # > 3.0 Richter
-    "Damn.",          # > 4.0 Richter
-    "DUDE.",          # > 5.0 Richter
-    "HOLY CRAP.",     # > 6.0 Richter
-    "WOW.",           # > 7.0 Richter
-    "MY GOD.",        # > 8.0 Richter
-    "GOODBYE."        # > 9.0 Richter
+    "Wat.",       # > 0.0 Richter
+    "Huh.",       # > 1.0 Richter
+    "Meh.",       # > 2.0 Richter
+    "Yawn.",      # > 3.0 Richter
+    "Hey.",       # > 4.0 Richter
+    "Whoah.",     # > 5.0 Richter
+    "DUDE.",      # > 6.0 Richter
+    "HOLY CRAP.", # > 7.0 Richter
+    "MY GOD.",    # > 8.0 Richter
+    "GOODBYE."    # > 9.0 Richter
   ]
   
   def expression
