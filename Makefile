@@ -1,5 +1,5 @@
 test:
-	./sfearthquakes.rb -v -d
+	./sfearthquakes.rb -v
 
 deploy:
 	ssh codahale.com "cd ~/sfearthquakes && git pull"

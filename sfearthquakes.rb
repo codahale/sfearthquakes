@@ -80,7 +80,7 @@ end
 
 if __FILE__ == $0
   verbose = ARGV.include?("-v")
-  dry_run = ARGV.include?("-d")
+  publishing = ARGV.include?("--publish")
   
   credentials = if File.exist?(CREDENTIALS_FILE)
     YAML.load_file(CREDENTIALS_FILE)
@@ -130,10 +130,14 @@ if __FILE__ == $0
     message = quake.message(bitly)
   
     if verbose
-      puts "Tweeting: #{message}"
+      if !publishing
+        puts "(Not Really) Tweeting: #{message}"
+      else
+        puts "Tweeting: #{message}"
+      end
     end
     
-    if !dry_run
+    if publishing
       client.statuses.update!(:status => message)
     end
   end
