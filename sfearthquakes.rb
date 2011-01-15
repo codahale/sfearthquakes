@@ -110,7 +110,13 @@ if __FILE__ == $0
     puts "#{new_quakes.size} new quakes to tweet about"
   end
   
-  
+  hidden_quakes = scraper.quakes.select { |q| q.timestamp > last_checked_at && !q.noticable? }
+  if !hidden_quakes.empty?
+    puts "Hidden quakes:"
+    for quake in hidden_quakes
+      puts "* #{quake.magnitude} @ #{quake.url}" 
+    end
+  end
   
   client = Grackle::Client.new(
     :auth => credentials[:twitter].merge(:type => :oauth),
