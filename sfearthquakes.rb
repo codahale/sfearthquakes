@@ -28,7 +28,6 @@ class Earthquake < Struct.new(:url, :location, :magnitude, :latitude, :longitude
   end
   
   def message(bitly)
-    p bitly.shorten(url).methods.sort
     "#{expression} A #{magnitude} quake just happened #{location}: #{bitly.shorten(url).short_url}"
   end
   
