@@ -79,72 +79,76 @@ private
 end
 
 if __FILE__ == $0
-  verbose = ARGV.include?("-v")
-  publishing = ARGV.include?("--publish")
-  
-  credentials = if File.exist?(CREDENTIALS_FILE)
-    YAML.load_file(CREDENTIALS_FILE)
-  else
-    raise "Unable to find credentials: #{CREDENTIALS_FILE}"
-  end
-  
-  scraper = Scraper.new
-  if verbose
-    puts "Found quakes:"
-    p scraper.quakes
-  end
-  
-  last_checked_at = if File.exist?(LAST_CHECKED_FILE)
-    Time.parse(File.read(LAST_CHECKED_FILE))
-  else
-    Time.now - (60 * 60) # 1 hour ago
-  end
-  
-  if verbose
-    puts "Last checked at #{last_checked_at}"
-  end
-  
-  new_quakes = scraper.quakes.select { |q| q.timestamp > last_checked_at && q.noticable? }.sort_by { |q| q.timestamp }
-  
-  if verbose
-    puts "#{new_quakes.size} new quakes to tweet about"
-  end
-  
-  hidden_quakes = scraper.quakes.select { |q| q.timestamp > last_checked_at && !q.noticable? }
-  if !hidden_quakes.empty?
-    puts "Hidden quakes:"
-    for quake in hidden_quakes
-      puts "* #{quake.magnitude} @ #{quake.url}" 
+  begin
+    verbose = ARGV.include?("-v")
+    publishing = ARGV.include?("--publish")
+    
+    credentials = if File.exist?(CREDENTIALS_FILE)
+      YAML.load_file(CREDENTIALS_FILE)
+    else
+      raise "Unable to find credentials: #{CREDENTIALS_FILE}"
     end
-  end
-  
-  client = Grackle::Client.new(
-    :auth => credentials[:twitter].merge(:type => :oauth),
-    :headers => {'User-Agent' => "SFEarthqakes/1.0 Grackle/#{Grackle::VERSION}"}
-  )
-  
-  Bitly.use_api_version_3
-  bitly = Bitly.new(credentials[:bitly][:username], credentials[:bitly][:api_key])
-  
-  for quake in new_quakes
-    message = quake.message(bitly)
-  
+    
+    scraper = Scraper.new
     if verbose
-      if !publishing
-        puts "(Not Really) Tweeting: #{message}"
-      else
-        puts "Tweeting: #{message}"
+      puts "Found quakes:"
+      p scraper.quakes
+    end
+    
+    last_checked_at = if File.exist?(LAST_CHECKED_FILE)
+      Time.parse(File.read(LAST_CHECKED_FILE))
+    else
+      Time.now - (60 * 60) # 1 hour ago
+    end
+    
+    if verbose
+      puts "Last checked at #{last_checked_at}"
+    end
+    
+    new_quakes = scraper.quakes.select { |q| q.timestamp > last_checked_at && q.noticable? }.sort_by { |q| q.timestamp }
+    
+    if verbose
+      puts "#{new_quakes.size} new quakes to tweet about"
+    end
+    
+    hidden_quakes = scraper.quakes.select { |q| q.timestamp > last_checked_at && !q.noticable? }
+    if !hidden_quakes.empty?
+      puts "Hidden quakes:"
+      for quake in hidden_quakes
+        puts "* #{quake.magnitude} @ #{quake.url}" 
       end
     end
     
-    if publishing
-      client.statuses.update!(:status => message)
+    client = Grackle::Client.new(
+      :auth => credentials[:twitter].merge(:type => :oauth),
+      :headers => {'User-Agent' => "SFEarthqakes/1.0 Grackle/#{Grackle::VERSION}"}
+    )
+    
+    Bitly.use_api_version_3
+    bitly = Bitly.new(credentials[:bitly][:username], credentials[:bitly][:api_key])
+    
+    for quake in new_quakes
+      message = quake.message(bitly)
+    
+      if verbose
+        if !publishing
+          puts "(Not Really) Tweeting: #{message}"
+        else
+          puts "Tweeting: #{message}"
+        end
+      end
+      
+      if publishing
+        client.statuses.update!(:status => message)
+      end
     end
-  end
-  
-  
-  # update the last time we ran this
-  File.open(LAST_CHECKED_FILE, "w") do |f|
-    f << (new_quakes.last ? new_quakes.last.timestamp.to_s : Time.now.to_s)
+    
+    
+    # update the last time we ran this
+    File.open(LAST_CHECKED_FILE, "w") do |f|
+      f << (new_quakes.last ? new_quakes.last.timestamp.to_s : Time.now.to_s)
+    end
+  rescue Timeout::Error
+    # I don't care about timeouts
   end
 end
