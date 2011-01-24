@@ -28,7 +28,7 @@ class Earthquake < Struct.new(:url, :location, :magnitude, :latitude, :longitude
   end
   
   def message(bitly)
-    "#{expression} A #{magnitude} quake just happened #{location}: #{bitly.shorten(url).short_url}"
+    "#{expression} A #{magnitude} quake just happened #{location}: #{bitly.shorten(url).short_url}".gsub(/[\s]+/, " ")
   end
   
   def noticable?
