@@ -26,9 +26,13 @@ public class SfEarthquakes {
                 final Optional<Earthquake> existing = db.get(earthquake.getId());
                 if (!existing.isPresent()) {
                     final Announcement announcement = new Announcement(earthquake);
-                    if (announcement.isTweetable() && !noTweeting) {
-                        LOGGER.warning("Tweeting new earthquake: " + earthquake);
-                        announcer.tweet(announcement);
+                    if (announcement.isTweetable()) {
+                        if (noTweeting) {
+                            LOGGER.warning("NOT tweeting new earthquake: " + earthquake);
+                        } else {
+                            LOGGER.warning("Tweeting new earthquake: " + earthquake);
+                            announcer.tweet(announcement);
+                        }
                     } else {
                         LOGGER.info("Uninteresting new earthquake: " + earthquake);
                     }
