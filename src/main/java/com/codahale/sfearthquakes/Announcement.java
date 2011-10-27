@@ -12,11 +12,11 @@ public class Announcement {
         "Meh.",       // > 0.0 Richter
         "Meh.",       // > 1.0 Richter
         "Meh.",       // > 2.0 Richter
-        "Huh.",       // > 3.0 Richter
-        "Hey.",       // > 4.0 Richter
+        "Hey.",       // > 3.0 Richter
+        "Dang.",      // > 4.0 Richter
         "Whoah.",     // > 5.0 Richter
-        "DUDE.",      // > 6.0 Richter
-        "HOLY CRAP.", // > 7.0 Richter
+        "DUDE!",      // > 6.0 Richter
+        "HOLY SHIT.", // > 7.0 Richter
         "MY GOD.",    // > 8.0 Richter
         "GOODBYE."    // > 9.0 Richter
     );
