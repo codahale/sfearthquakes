@@ -1,9 +1,4 @@
-test:
-	./sfearthquakes.rb -v
-
 deploy:
-	ssh codahale.com "cd ~/sfearthquakes && git pull"
-
-token:
-	./token_dance.rb
-
+	mvn verify
+	scp target/sfearthquakes-*.jar codahale.com:~/sfearthquakes/sfearthquakes.jar
+	scp sfearthquakes.properties codahale.com:~/sfearthquakes/sfearthquakes.properties

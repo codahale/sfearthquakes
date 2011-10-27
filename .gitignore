@@ -1,2 +1,3 @@
-.last_checked
-.credentials
+data
+target
+*.properties
