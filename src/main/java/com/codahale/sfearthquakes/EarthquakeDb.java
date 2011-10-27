@@ -26,10 +26,8 @@ public class EarthquakeDb {
     }
     
     private File dataDirectory(String id) {
-        final String firstId = id.substring(2, 6);
-        final File firstDir = new File(rootDirectory, firstId);
-        final String secondId = id.substring(6, 10);
-        return new File(firstDir, secondId);
+        final String prefix = id.substring(0, 6);
+        return new File(rootDirectory, prefix);
     }
     
     private File dataFile(String id, boolean createDirectories) {
