@@ -1,16 +1,14 @@
 package com.codahale.sfearthquakes;
 
 import com.google.common.base.Optional;
-import twitter4j.TwitterException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 public class SfEarthquakes {
     private static Logger LOGGER = Logger.getLogger(SfEarthquakes.class.getCanonicalName());
 
-    public static void main(String[] args) throws IOException, TwitterException {
+    public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             System.err.println("java -jar sfearthquakes.jar <config file> <data directory>");
             System.exit(-1);
@@ -35,6 +33,8 @@ public class SfEarthquakes {
                         LOGGER.info("Uninteresting new earthquake: " + earthquake);
                     }
                     db.put(earthquake);
+                } else {
+                    LOGGER.fine("Already seen " + earthquake.getId());
                 }
             }
         }
