@@ -1,26 +1,25 @@
 package com.codahale.sfearthquakes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Optional;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.MappingJsonFactory;
 
 import java.io.File;
 import java.io.IOException;
 
 public class EarthquakeDb {
-    private final MappingJsonFactory factory;
+    private final ObjectMapper objectMapper;
     private final File rootDirectory;
 
     public EarthquakeDb(File rootDirectory) {
-        this.factory = new MappingJsonFactory();
+        this.objectMapper = new ObjectMapper();
         this.rootDirectory = rootDirectory;
     }
 
     public Optional<Earthquake> get(String id) throws IOException {
         final File file = dataFile(id, false);
         if (file.exists()) {
-            return Optional.fromNullable(factory.createJsonParser(file).readValueAs(Earthquake.class));
+            return Optional.fromNullable(objectMapper.readValue(file, Earthquake.class));
         }
         return Optional.absent();
     }
@@ -40,9 +39,7 @@ public class EarthquakeDb {
 
     public void put(Earthquake earthquake) throws IOException {
         final File file = dataFile(earthquake.getId(), true);
-        final JsonGenerator generator = factory.createJsonGenerator(file, JsonEncoding.UTF8)
-                                               .useDefaultPrettyPrinter();
-        generator.writeObject(earthquake);
-        generator.close();
+        final ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+        writer.writeValue(file, earthquake);
     }
 }
