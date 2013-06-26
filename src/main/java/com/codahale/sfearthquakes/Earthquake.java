@@ -6,7 +6,12 @@ import com.google.common.base.Objects;
 
 import java.net.URI;
 
+import static java.lang.Math.*;
+
 public class Earthquake {
+    private static final double SF_LAT = 37.77493;
+    private static final double SF_LONG = -122.41942;
+
     private double latitude;
     private double longitude;
     private double magnitude;
@@ -75,8 +80,16 @@ public class Earthquake {
 
     @JsonIgnore
     public boolean isBayArea() {
-        return (latitude <= 38.20 && latitude >= 37.30) &&
-                (longitude <= -121.87 && longitude >= -123.00);
+        return distance(SF_LAT, SF_LONG, latitude, longitude) <= 100; // miles
+    }
+
+    private double distance(double lat1, double long1, double lat2, double long2) {
+        final double r = 3958.75;
+        final double a = pow(sin(toRadians(lat2 - lat1) / 2), 2) +
+                         pow(sin(toRadians(long2 - long1) / 2), 2) *
+                         cos(toRadians(lat1)) *
+                         cos(toRadians(lat2));
+        return r * 2 * atan2(sqrt(a), sqrt(1 - a));
     }
 
     @Override

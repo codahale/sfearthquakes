@@ -35,7 +35,7 @@ public class SfEarthquakes {
                                 announcer.tweet(announcement);
                             }
                         } else {
-                            LOGGER.info("NOT tweeting new earthquake: " + announcement);
+                            LOGGER.info("NOT tweeting boring new earthquake: " + announcement);
                         }
                         db.put(earthquake);
                     } else {
