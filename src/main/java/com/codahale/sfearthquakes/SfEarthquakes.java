@@ -23,22 +23,26 @@ public class SfEarthquakes {
             final EarthquakeList earthquakes = EarthquakeList.load();
             final EarthquakeDb db = new EarthquakeDb(new File(args[1]));
             for (Earthquake earthquake : earthquakes) {
-                final Optional<Earthquake> existing = db.get(earthquake.getId());
-                if (!existing.isPresent()) {
-                    final Announcement announcement = new Announcement(earthquake);
-                    if (announcement.isTweetable()) {
-                        if (noTweeting) {
-                            LOGGER.warning("NOT tweeting new earthquake: " + earthquake);
+                if (earthquake.isBayArea()) {
+                    final Optional<Earthquake> existing = db.get(earthquake.getId());
+                    if (!existing.isPresent()) {
+                        final Announcement announcement = new Announcement(earthquake);
+                        if (earthquake.isPerceivable()) {
+                            if (noTweeting) {
+                                LOGGER.warning("NOT tweeting new earthquake: " + announcement);
+                            } else {
+                                LOGGER.warning("Tweeting new earthquake: " + announcement);
+                                announcer.tweet(announcement);
+                            }
                         } else {
-                            LOGGER.warning("Tweeting new earthquake: " + earthquake);
-                            announcer.tweet(announcement);
+                            LOGGER.info("NOT tweeting new earthquake: " + announcement);
                         }
+                        db.put(earthquake);
                     } else {
-                        LOGGER.info("Uninteresting new earthquake: " + earthquake);
+                        LOGGER.fine("Already seen " + earthquake.getId());
                     }
-                    db.put(earthquake);
                 } else {
-                    LOGGER.fine("Already seen " + earthquake.getId());
+                    LOGGER.fine("Non-local earthquake: " + earthquake.getId());
                 }
             }
         }

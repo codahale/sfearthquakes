@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import static com.google.common.primitives.Ints.min;
 import static java.lang.Math.floor;
+import static java.lang.Math.max;
 import static java.lang.Math.round;
 import static java.lang.String.format;
 
@@ -22,7 +23,7 @@ public class Announcement {
     );
     
     private static String prefix(double magnitude) {
-        return PREFIXES.get(min(10, (int) round(floor(magnitude))));
+        return PREFIXES.get(max(0, min(10, (int) round(floor(magnitude)))));
     }
 
     private final Earthquake earthquake;
@@ -31,15 +32,11 @@ public class Announcement {
         this.earthquake = earthquake;
     }
 
-    public boolean isTweetable() {
-        return earthquake.getMagnitude() >= 3.0;
-    }
-
     @Override
     public String toString() {
         return format("%s A %1.1f quake just happened %s: %s",
                       prefix(earthquake.getMagnitude()), earthquake.getMagnitude(),
-                      earthquake.getLocation(), earthquake.getURI());
+                      earthquake.getPlace(), earthquake.getURI());
     }
 
     public double getLongitude() {
