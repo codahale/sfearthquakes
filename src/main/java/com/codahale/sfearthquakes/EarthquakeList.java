@@ -6,16 +6,16 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EarthquakeList extends ForwardingList<Earthquake> {
-    private static final Logger LOGGER = Logger.getLogger(EarthquakeList.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EarthquakeList.class);
     private static final URI EARTHQUAKES_URI = URI.create("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.csv");
 
     public static EarthquakeList load() throws Exception {
@@ -44,7 +44,7 @@ public class EarthquakeList extends ForwardingList<Earthquake> {
             final ObjectReader reader = mapper.reader(Earthquake.class).with(schema);
             return new EarthquakeList(reader.<Earthquake>readValues(EARTHQUAKES_URI.toURL()));
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Unable to load USGS site", e);
+            LOGGER.error("Unable to load USGS site", e);
             throw e;
         }
     }

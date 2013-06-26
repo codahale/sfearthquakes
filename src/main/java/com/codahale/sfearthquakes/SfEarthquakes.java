@@ -1,12 +1,13 @@
 package com.codahale.sfearthquakes;
 
 import com.google.common.base.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 public class SfEarthquakes {
-    private static Logger LOGGER = Logger.getLogger(SfEarthquakes.class.getCanonicalName());
+    private static Logger LOGGER = LoggerFactory.getLogger(SfEarthquakes.class);
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
@@ -29,20 +30,20 @@ public class SfEarthquakes {
                         final Announcement announcement = new Announcement(earthquake);
                         if (earthquake.isPerceivable()) {
                             if (noTweeting) {
-                                LOGGER.warning("NOT tweeting new earthquake: " + announcement);
+                                LOGGER.warn("NOT tweeting new earthquake: {}", announcement);
                             } else {
-                                LOGGER.warning("Tweeting new earthquake: " + announcement);
+                                LOGGER.warn("Tweeting new earthquake: {}", announcement);
                                 announcer.tweet(announcement);
                             }
                         } else {
-                            LOGGER.info("NOT tweeting boring new earthquake: " + announcement);
+                            LOGGER.info("NOT tweeting boring new earthquake: {}", announcement);
                         }
                         db.put(earthquake);
                     } else {
-                        LOGGER.fine("Already seen " + earthquake.getId());
+                        LOGGER.debug("Already seen {}", earthquake.getId());
                     }
                 } else {
-                    LOGGER.fine("Non-local earthquake: " + earthquake.getId());
+                    LOGGER.debug("Non-local earthquake: {}", earthquake.getId());
                 }
             }
         }
