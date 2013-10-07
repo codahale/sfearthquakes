@@ -22,25 +22,7 @@ public class EarthquakeList extends ForwardingList<Earthquake> {
         try {
             final CsvMapper mapper = new CsvMapper();
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-            final CsvSchema schema = CsvSchema.builder()
-                                              .setUseHeader(true)
-                                              .addColumn("time")
-                                              .addColumn("latitude", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("longitude", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("depth", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("mag", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("magType")
-                                              .addColumn("nst", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("gap", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("dmin", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("rms", CsvSchema.ColumnType.NUMBER)
-                                              .addColumn("net")
-                                              .addColumn("id")
-                                              .addColumn("updated")
-                                              .addColumn("place")
-                                              .build();
-
+            final CsvSchema schema = CsvSchema.builder().setUseHeader(true).build();
             final ObjectReader reader = mapper.reader(Earthquake.class).with(schema);
             return new EarthquakeList(reader.<Earthquake>readValues(EARTHQUAKES_URI.toURL()));
         } catch (IOException e) {
